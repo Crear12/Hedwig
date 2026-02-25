@@ -743,7 +743,7 @@ Since we now support both web API and local CLI for Claude, consider offering sa
 - [x] Feature specification: UI Elements toggles for clutter reduction (#174)
 - [x] Identified 15+ toggleable non-critical features across Thread View, Thread List, Messages, Composer
 - [x] Created 3-phase implementation plan (Foundation + High-Impact → Coverage → Polish)
-- [x] Documented in docs/UI_ELEMENTS_TOGGLES.md
+- [x] Documented in docs/archive/design/UI_ELEMENTS_TOGGLES.md
 - Child Issues: #175-184 (Foundation, Settings UI, Thread exports, Composer features, Copy variants, Thread View, Thread List, Messages matrix, Settings expansion, Polish)
 
 - **#130 / #143**: ACP Phase 1: Registry & Read-Only Adapter.
@@ -825,7 +825,7 @@ Since we now support both web API and local CLI for Claude, consider offering sa
 - CI: added smoke coverage for token-session security behavior (pairing token semantics + read-only guards).
 - CLI/update: stale owned listeners now use bounded SIGKILL fallback cleanup (including symlink-safe ownership detection) to reduce restart flakiness.
 - CI: added edge guards for one-time pair-code consumption and immediate auth denial after token-session revocation.
-- Docs: added a phased native iOS roadmap (`docs/NATIVE_IOS_ROADMAP.md`) with constraints, milestones, and decision gates.
+- Docs: added a phased native iOS roadmap (`docs/archive/history/NATIVE_IOS_ROADMAP.md`) with constraints, milestones, and decision gates.
 - Reliability: durable outbox + idempotency for mutating RPCs (P1, #105) completed via PR #111.
 - Observability: run timeline + failure reason counters in admin status (P1, #106) completed via PR #112.
 - Away mode: blocked-turn push alerts for approvals/user-input (P2, #107) completed via PR #113.
@@ -847,7 +847,7 @@ Since we now support both web API and local CLI for Claude, consider offering sa
 
 ### ACP + Codex Multi-Provider Integration
 
-Epic tracking: [`docs/ACP_CODEX_INTEGRATION_EPIC.md`](docs/ACP_CODEX_INTEGRATION_EPIC.md)
+Epic tracking: [`docs/archive/epics/ACP_CODEX_INTEGRATION_EPIC.md`](docs/archive/epics/ACP_CODEX_INTEGRATION_EPIC.md)
 
 **Phase 1: Registry & Read-Only Adapter** ✅ COMPLETED (PR #143)
 
@@ -867,7 +867,7 @@ Epic tracking: [`docs/ACP_CODEX_INTEGRATION_EPIC.md`](docs/ACP_CODEX_INTEGRATION
 - [x] P4-05: Advanced Filtering + View Persistence ✅ (2026-02-18)
 - [x] P4-06: Hardening + Release Gate ✅
 
-Source and implementation notes: [`docs/RECOMMENDATIONS.md`](docs/RECOMMENDATIONS.md)
+Source and implementation notes: [`docs/archive/reports/RECOMMENDATIONS.md`](docs/archive/reports/RECOMMENDATIONS.md)
 
 ## Phase 5: Multi-Provider Excellence
 

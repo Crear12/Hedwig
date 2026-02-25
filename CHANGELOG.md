@@ -78,7 +78,7 @@ The following features were added during early development:
 - Admin: add a limited remote CLI runner for safe `coderelay` commands (with output capture).
 - UI: Admin page refreshed with a structured, settings-style layout and clearer hierarchy.
 - Docs/UX: added `docs/ADMIN_REDESIGN_PROPOSAL.md` and aligned backlog/project planning for phased Admin + Settings UI redesign work.
-- Docs: added `docs/NATIVE_IOS_ROADMAP.md` with phased native-client milestones, constraints, and decision gates.
+- Docs: added `docs/archive/history/NATIVE_IOS_ROADMAP.md` with phased native-client milestones, constraints, and decision gates.
 - Docs/Repo: added `CONTRIBUTING.md` with an explicit ff-only sync policy, PR/testing expectations, and a local pre-release clean-tree check script (`scripts/ci/check-clean-tree.sh`).
 - UX: added one-tap composer quick-reply shortcuts (default `Proceed`/`Elaborate`) plus a `/settings` editor to customize and persist preset labels/text per device.
 - Settings redesign follow-up: `/settings` now uses a responsive two-column card grid on desktop (single-column mobile) with core controls prioritized above secondary account/about details.
@@ -221,7 +221,7 @@ The following features were added during early development:
 ### Docs
 
 - Expanded CLI and troubleshooting docs.
-- Added `BACKLOG.md` and `docs/DIFFERENCES_FROM_ZANE.md`.
+- Added `BACKLOG.md` and `docs/archive/history/DIFFERENCES_FROM_ZANE.md`.
 
 ## 2026-02-07 - Thread Management & Attachments
 

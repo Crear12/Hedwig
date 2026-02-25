@@ -345,7 +345,7 @@ All Phase 4 goals achieved:
 - ✅ **P4-05**: Advanced filtering with provider + status axes
 - ✅ **P4-06**: Hardening with timeouts, retries, and health tracking
 
-See [ACP_CODEX_INTEGRATION_EPIC.md](../ACP_CODEX_INTEGRATION_EPIC.md) for implementation details.
+See [`archive/epics/ACP_CODEX_INTEGRATION_EPIC.md`](archive/epics/ACP_CODEX_INTEGRATION_EPIC.md) for historical implementation notes.
 
 ## Adding New Providers
 
@@ -376,4 +376,4 @@ See `CopilotAcpAdapter` for a complete reference implementation.
 
 ## Questions?
 
-See [ACP_CODEX_INTEGRATION_EPIC.md](./ACP_CODEX_INTEGRATION_EPIC.md) for context and [ARCHITECTURE.md](./ARCHITECTURE.md) for system design.
+See [`archive/epics/ACP_CODEX_INTEGRATION_EPIC.md`](archive/epics/ACP_CODEX_INTEGRATION_EPIC.md) for historical context and [`ARCHITECTURE.md`](ARCHITECTURE.md) for system design.

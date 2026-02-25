@@ -23,7 +23,7 @@
 - `BACKLOG.md` - Project planning
 - `CONTRIBUTING.md` - Contributor guidelines
 - `LICENSE` - License terms
-- `AGENT_PROMPT.md` - Agent usage instructions
+- `docs/README.md` - Documentation index (start here)
 
 ### Source/Entry Files (KEEP)
 
@@ -38,6 +38,7 @@
 - `src/` - Application source code
 - `services/` - Backend services
 - `docs/` - Documentation
+  - `docs/archive/` - Historical planning docs and reports (not required for typical users)
 - `public/` - Static assets
 - `scripts/` - Project scripts
 - `migrations/` - Database/data migrations

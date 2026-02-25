@@ -163,7 +163,7 @@ CodeRelay implements five provider adapters:
 - **Advanced Filtering (P4-05)**: Provider and status filters with localStorage persistence
 - **Hardening (P4-06)**: 30s timeouts, exponential backoff retry, health tracking
 
-See [ACP_CODEX_INTEGRATION_EPIC.md](../ACP_CODEX_INTEGRATION_EPIC.md) for implementation details.
+See [`archive/epics/ACP_CODEX_INTEGRATION_EPIC.md`](archive/epics/ACP_CODEX_INTEGRATION_EPIC.md) for historical implementation notes.
 
 ## Data Flow
 

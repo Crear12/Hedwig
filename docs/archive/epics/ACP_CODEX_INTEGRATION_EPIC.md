@@ -15,7 +15,7 @@ Date: 2026-02-16
   - Anthropic SDK integration with streaming support
   - Session/event normalizers
   - UI provider filter includes Claude
-  - See [PHASE5_IMPLEMENTATION_SPECS.md](PHASE5_IMPLEMENTATION_SPECS.md) for details
+  - See [PHASE5_IMPLEMENTATION_SPECS.md](../phases/PHASE5_IMPLEMENTATION_SPECS.md) for details
 
 ## Summary
 
@@ -240,7 +240,7 @@ All providers declare capabilities via `ProviderCapabilities`:
 **Status:** Planning (Entry Gate - Approval Required)  
 **Prerequisites:** Phase 1 complete ✅  
 **Goal:** Enable sending prompts to Copilot sessions and streaming responses  
-**Detailed Plan:** [`docs/PHASE2_PLAN.md`](PHASE2_PLAN.md)
+**Detailed Plan:** [`docs/PHASE2_PLAN.md`](../phases/PHASE2_PLAN.md)
 
 **Issue structure clarification:**
 
@@ -258,7 +258,7 @@ Builds on Phase 1 provider infrastructure to add write capabilities:
 
 ### Implementation Issues
 
-**⚠️ Entry Gate:** All issues must be reviewed against [`PHASE2_PLAN.md`](PHASE2_PLAN.md) before code execution.
+**⚠️ Entry Gate:** All issues must be reviewed against [`PHASE2_PLAN.md`](../phases/PHASE2_PLAN.md) before code execution.
 
 #### Phase 2 Task 1: ACP Write Capability - sendPrompt Method
 
@@ -352,7 +352,7 @@ Phase 1 ✅
 | Streaming errors mid-response | Timeout-based cleanup (30s), emit partial content + error event |
 | Rate limiting from backend | Parse rate limit errors, surface to user with retry guidance |
 
-See [`PHASE2_PLAN.md`](PHASE2_PLAN.md) for complete risk table and mitigation strategies.
+See [`PHASE2_PLAN.md`](../phases/PHASE2_PLAN.md) for complete risk table and mitigation strategies.
 
 ### Success Criteria
 
@@ -390,7 +390,7 @@ Phase 2 complete when:
 
 **Status:** ✅ COMPLETE (2026-02-18)
 
-**Detailed Plan:** [`docs/PHASE4_PLAN.md`](PHASE4_PLAN.md)
+**Detailed Plan:** [`docs/PHASE4_PLAN.md`](../phases/PHASE4_PLAN.md)
 
 **Goal:** Introduce capability detection and graceful UI degradation based on provider features.
 
