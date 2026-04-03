@@ -31,12 +31,12 @@
 </script>
 
 <svelte:head>
-  <title>CodeRelay</title>
+  <title>Hedwig</title>
 </svelte:head>
 
 <div class="landing stack">
   <header class="landing-header">
-    <div class="brand">coderelay</div>
+    <div class="brand">Hedwig</div>
     <div class="header-actions">
       {#if pwa.canInstall && !pwa.isStandalone}
         <button class="ghost-btn" type="button" onclick={() => pwa.install()}>Install app</button>
@@ -145,7 +145,12 @@
 <style>
   .landing {
     min-height: 100vh;
-    background: var(--cli-bg);
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top center, rgb(247 210 75 / 0.24), transparent 36%),
+      radial-gradient(circle at right top, rgb(116 0 1 / 0.2), transparent 30%),
+      linear-gradient(180deg, color-mix(in srgb, var(--cli-bg-elevated) 76%, var(--cli-bg)) 0%, var(--cli-bg) 72%);
     color: var(--cli-text);
     font-family: var(--font-mono);
     padding: var(--space-lg) var(--space-md);
@@ -164,10 +169,12 @@
   }
 
   .brand {
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-family: var(--font-brand);
+    font-size: clamp(1.8rem, 1.4rem + 1vw, 2.8rem);
+    font-weight: 400;
+    letter-spacing: 0.08em;
     color: var(--cli-prefix-agent);
+    text-shadow: 0 2px 20px color-mix(in srgb, var(--cli-prefix-tool) 30%, transparent);
   }
 
   .icon-btn {
@@ -202,7 +209,12 @@
 
   .hero h1 {
     margin: 0;
+    font-family: var(--font-brand);
     font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+    text-shadow: 0 3px 24px color-mix(in srgb, var(--cli-prefix-tool) 22%, transparent);
   }
 
   .hero p {
@@ -231,6 +243,7 @@
     background: var(--color-btn-primary-bg, var(--cli-prefix-agent));
     color: var(--color-btn-primary-text, var(--cli-bg));
     text-decoration: none;
+    box-shadow: 0 12px 30px color-mix(in srgb, var(--cli-prefix-agent) 18%, transparent);
   }
 
   .ghost-btn {
@@ -361,6 +374,11 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    padding: var(--space-md);
+    border: 1px solid color-mix(in srgb, var(--cli-border) 82%, var(--cli-prefix-tool) 18%);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--cli-bg-elevated) 88%, var(--cli-prefix-tool) 12%);
+    box-shadow: var(--shadow-card);
   }
 
   .feature-label {

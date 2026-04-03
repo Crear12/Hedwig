@@ -477,7 +477,10 @@ import { agents } from "../lib/agents.svelte";
         return { ...preset, mode: nextMode };
       }
       if (key === "reasoningEffort") {
-        const nextReasoning = value === "low" || value === "high" ? value : "medium";
+        const nextReasoning =
+          value === "low" || value === "medium" || value === "high" || value === "xhigh"
+            ? value
+            : "medium";
         return { ...preset, reasoningEffort: nextReasoning };
       }
       return { ...preset, [key]: value };
@@ -1374,6 +1377,7 @@ import { agents } from "../lib/agents.svelte";
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
+                  <option value="xhigh">Extra High</option>
                 </select>
               </div>
               <div class="field flex flex-col gap-1">

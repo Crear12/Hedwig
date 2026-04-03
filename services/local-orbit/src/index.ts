@@ -1,10 +1,11 @@
 import { hostname, homedir } from "node:os";
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, existsSync, readFileSync, renameSync, unlinkSync } from "node:fs";
 import { readdir, stat, unlink, mkdir as mkdirAsync, writeFile, rename, access } from "node:fs/promises";
 import { dirname, join, basename } from "node:path";
 import { createHash } from "node:crypto";
 import { Database } from "bun:sqlite";
 import QRCode from "qrcode";
+import webpush from "web-push";
 import { createRegistry } from "./providers/registry.js";
 import { CodexAdapter, CopilotAcpAdapter, ClaudeAdapter, ClaudeMcpAdapter, OpenCodeAdapter } from "./providers/adapters/index.js";
 import { AgentStore } from "./agents/agent-store.js";
@@ -155,6 +156,68 @@ function tokenFromConfigJson(json: Record<string, unknown> | null): string | nul
   return typeof token === "string" && token.trim() ? token.trim() : null;
 }
 
+type PushConfig = {
+  vapidPublicKey: string;
+  vapidPrivateKey: string;
+};
+
+function pushConfigFromConfigJson(json: Record<string, unknown> | null): PushConfig | null {
+  if (!json) return null;
+  const push = json.push;
+  if (!push || typeof push !== "object" || Array.isArray(push)) return null;
+  const vapidPublicKey = typeof (push as Record<string, unknown>).vapidPublicKey === "string"
+    ? ((push as Record<string, unknown>).vapidPublicKey as string).trim()
+    : "";
+  const vapidPrivateKey = typeof (push as Record<string, unknown>).vapidPrivateKey === "string"
+    ? ((push as Record<string, unknown>).vapidPrivateKey as string).trim()
+    : "";
+  if (!vapidPublicKey || !vapidPrivateKey) return null;
+  return { vapidPublicKey, vapidPrivateKey };
+}
+
+function pushConfigFromEnv(): PushConfig | null {
+  const vapidPublicKey = (
+    process.env.CODERELAY_PUSH_VAPID_PUBLIC_KEY ??
+    process.env.ZANE_PUSH_VAPID_PUBLIC_KEY ??
+    process.env.VAPID_PUBLIC_KEY ??
+    ""
+  ).trim();
+  const vapidPrivateKey = (
+    process.env.CODERELAY_PUSH_VAPID_PRIVATE_KEY ??
+    process.env.ZANE_PUSH_VAPID_PRIVATE_KEY ??
+    process.env.VAPID_PRIVATE_KEY ??
+    ""
+  ).trim();
+  if (!vapidPublicKey || !vapidPrivateKey) return null;
+  return { vapidPublicKey, vapidPrivateKey };
+}
+
+function writeConfigJsonAtomic(config: Record<string, unknown>): void {
+  if (!EFFECTIVE_CONFIG_JSON_PATH) return;
+  const tempPath = `${EFFECTIVE_CONFIG_JSON_PATH}.tmp`;
+  try {
+    writeFileSync(tempPath, JSON.stringify(config, null, 2) + "\n", "utf8");
+    renameSync(tempPath, EFFECTIVE_CONFIG_JSON_PATH);
+  } catch (err) {
+    try {
+      unlinkSync(tempPath);
+    } catch {
+      // ignore
+    }
+    throw err;
+  }
+}
+
+function persistPushConfigToConfigJson(pushConfig: PushConfig): void {
+  if (!EFFECTIVE_CONFIG_JSON_PATH) return;
+  const config = loadConfigJson() || {};
+  config.push = {
+    vapidPublicKey: pushConfig.vapidPublicKey,
+    vapidPrivateKey: pushConfig.vapidPrivateKey,
+  };
+  writeConfigJsonAtomic(config);
+}
+
 function uploadConfigFromConfigJson(json: Record<string, unknown> | null): void {
   if (!json) return;
   const dir = (json.uploadDir as string | undefined) ?? (json.upload_dir as string | undefined);
@@ -177,6 +240,26 @@ function uploadConfigFromConfigJson(json: Record<string, unknown> | null): void 
 
 const loadedConfig = loadConfigJson();
 uploadConfigFromConfigJson(loadedConfig);
+const PUSH_CONFIG = (() => {
+  const configured = pushConfigFromEnv() ?? pushConfigFromConfigJson(loadedConfig);
+  if (configured) return configured;
+  const generated = webpush.generateVAPIDKeys();
+  const nextConfig: PushConfig = {
+    vapidPublicKey: generated.publicKey,
+    vapidPrivateKey: generated.privateKey,
+  };
+  try {
+    persistPushConfigToConfigJson(nextConfig);
+  } catch (e) {
+    console.warn("[push] Failed to persist VAPID keys:", e instanceof Error ? e.message : String(e));
+  }
+  return nextConfig;
+})();
+const PUSH_VAPID_SUBJECT =
+  process.env.CODERELAY_PUSH_VAPID_SUBJECT ??
+  process.env.ZANE_PUSH_VAPID_SUBJECT ??
+  "mailto:noreply@coderelay.local";
+webpush.setVapidDetails(PUSH_VAPID_SUBJECT, PUSH_CONFIG.vapidPublicKey, PUSH_CONFIG.vapidPrivateKey);
 
 // Initialize provider registry
 const registry = createRegistry();
@@ -251,6 +334,7 @@ type WsData = {
   anchorId?: string;
   authSource?: "legacy" | "session";
   authScope?: "full" | "read_only";
+  authUserId?: string;
 };
 
 interface AnchorMeta {
@@ -850,6 +934,24 @@ try {
 }
 
 db.exec(
+  "CREATE TABLE IF NOT EXISTS push_subscriptions (" +
+    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+    "user_id TEXT NOT NULL," +
+    "endpoint TEXT NOT NULL UNIQUE," +
+    "p256dh TEXT NOT NULL," +
+    "auth TEXT NOT NULL," +
+    "created_at INTEGER NOT NULL," +
+    "blocked_turn_enabled INTEGER NOT NULL DEFAULT 1" +
+  ");" +
+  "CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user ON push_subscriptions(user_id);"
+);
+try {
+  db.exec("ALTER TABLE push_subscriptions ADD COLUMN blocked_turn_enabled INTEGER NOT NULL DEFAULT 1;");
+} catch {
+  // already migrated
+}
+
+db.exec(
   "CREATE TABLE IF NOT EXISTS thread_metadata (" +
     "thread_id TEXT PRIMARY KEY," +
     "archived INTEGER NOT NULL DEFAULT 0," +
@@ -922,6 +1024,38 @@ const countTokenSessions = db.prepare(
 
 const countActiveTokenSessions = db.prepare(
   "SELECT COUNT(*) as n FROM token_sessions WHERE revoked_at IS NULL"
+);
+
+const upsertPushSubscription = db.prepare(
+  "INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth, created_at, blocked_turn_enabled) " +
+    "VALUES (?, ?, ?, ?, ?, ?) " +
+    "ON CONFLICT(endpoint) DO UPDATE SET " +
+    "user_id = excluded.user_id, " +
+    "p256dh = excluded.p256dh, " +
+    "auth = excluded.auth, " +
+    "blocked_turn_enabled = excluded.blocked_turn_enabled"
+);
+
+const deletePushSubscriptionByEndpoint = db.prepare(
+  "DELETE FROM push_subscriptions WHERE endpoint = ?"
+);
+
+const updatePushPreferencesByUser = db.prepare(
+  "UPDATE push_subscriptions SET blocked_turn_enabled = ? WHERE user_id = ?"
+);
+
+const listPushSubscriptionsForUser = db.prepare(
+  "SELECT endpoint, p256dh, auth, blocked_turn_enabled FROM push_subscriptions WHERE user_id = ?"
+);
+
+const listPushSubscriptionsForBlockedTurns = db.prepare(
+  "SELECT endpoint, p256dh, auth, blocked_turn_enabled FROM push_subscriptions " +
+    "WHERE blocked_turn_enabled = 1 AND (" +
+    "user_id = 'legacy' OR EXISTS (" +
+    "SELECT 1 FROM token_sessions WHERE token_sessions.id = push_subscriptions.user_id " +
+    "AND token_sessions.revoked_at IS NULL AND token_sessions.mode != 'read_only'" +
+    ")" +
+  ")"
 );
 
 const upsertThreadSelection = db.prepare(
@@ -1315,6 +1449,13 @@ type AuthContext =
   | { ok: true; mode: "session"; sessionId: string; sessionMode: "full" | "read_only" }
   | { ok: false };
 
+type PushSubscriptionRow = {
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  blocked_turn_enabled?: number;
+};
+
 function getBearer(req: Request): string | null {
   const auth = req.headers.get("authorization") ?? "";
   if (!auth.toLowerCase().startsWith("bearer ")) return null;
@@ -1354,6 +1495,10 @@ function authorised(req: Request): boolean {
   if (ctx.sessionMode !== "read_only") return true;
   const method = req.method.toUpperCase();
   return method === "GET" || method === "HEAD";
+}
+
+function authUserIdFromContext(ctx: Extract<AuthContext, { ok: true }>): string {
+  return ctx.mode === "session" ? ctx.sessionId : "legacy";
 }
 
 function randomTokenHex(bytes = 32): string {
@@ -2010,6 +2155,8 @@ const threadToClients = new Map<string, Set<WebSocket>>();
 const threadToAnchors = new Map<string, Set<WebSocket>>();
 const anchorMeta = new Map<WebSocket, AnchorMeta>();
 let anchorAuth: AnchorAuthState = { status: "unknown" };
+const blockedPushThrottleByThread = new Map<string, number>();
+const BLOCKED_PUSH_THROTTLE_MS = 45_000;
 
 function listAnchors(): AnchorMeta[] {
   return Array.from(anchorMeta.values());
@@ -2017,6 +2164,99 @@ function listAnchors(): AnchorMeta[] {
 
 function broadcastToClients(data: unknown): void {
   for (const ws of clientSockets.keys()) send(ws, data);
+}
+
+function resetBlockedPushThrottle(threadId: string): void {
+  for (const key of blockedPushThrottleByThread.keys()) {
+    if (key.startsWith(`${threadId}:`)) blockedPushThrottleByThread.delete(key);
+  }
+}
+
+async function getThreadLabelForPush(threadId: string): Promise<string> {
+  try {
+    const titles = await loadCodexThreadTitles();
+    const title = titles?.[threadId];
+    if (title && title.trim()) return title.trim();
+  } catch {
+    // ignore
+  }
+  const trimmed = threadId.trim();
+  if (!trimmed) return "this thread";
+  if (trimmed.startsWith("copilot-acp:")) {
+    const sessionId = trimmed.slice("copilot-acp:".length).trim();
+    if (sessionId) return `Copilot session ${sessionId.slice(0, 8)}`;
+  }
+  return trimmed.slice(0, 8);
+}
+
+async function sendWebPushNotifications(rows: PushSubscriptionRow[], payload: Record<string, unknown>): Promise<boolean> {
+  if (!rows.length) return false;
+  const body = JSON.stringify(payload);
+  let sent = false;
+  await Promise.all(rows.map(async (row) => {
+    try {
+      await webpush.sendNotification(
+        {
+          endpoint: row.endpoint,
+          keys: {
+            p256dh: row.p256dh,
+            auth: row.auth,
+          },
+        },
+        body
+      );
+      sent = true;
+    } catch (err) {
+      const statusCode = typeof err === "object" && err && "statusCode" in err ? Number((err as any).statusCode) : 0;
+      if (statusCode === 404 || statusCode === 410) {
+        try {
+          deletePushSubscriptionByEndpoint.run(row.endpoint);
+        } catch {
+          // ignore
+        }
+      }
+      console.warn("[push] Notification send failed:", err instanceof Error ? err.message : String(err));
+    }
+  }));
+  return sent;
+}
+
+async function sendPushToUser(userId: string, payload: Record<string, unknown>): Promise<boolean> {
+  const rows = listPushSubscriptionsForUser.all(userId) as PushSubscriptionRow[];
+  return sendWebPushNotifications(rows, payload);
+}
+
+async function sendBlockedTurnPush(threadId: string, reason: "approval" | "input"): Promise<boolean> {
+  const throttleKey = `${threadId}:${reason}`;
+  const now = Date.now();
+  const last = blockedPushThrottleByThread.get(throttleKey) ?? 0;
+  if (now - last < BLOCKED_PUSH_THROTTLE_MS) return false;
+
+  const rows = listPushSubscriptionsForBlockedTurns.all() as PushSubscriptionRow[];
+  if (!rows.length) return false;
+
+  const label = await getThreadLabelForPush(threadId);
+  const body =
+    reason === "approval"
+      ? `Approval required in ${label}`
+      : `User input required in ${label}`;
+  const sent = await sendWebPushNotifications(rows, {
+    type: `blocked-${reason}`,
+    threadId,
+    title: "Hedwig: action needed",
+    body,
+    actionUrl: `/thread/${encodeURIComponent(threadId)}`,
+  });
+  if (sent) blockedPushThrottleByThread.set(throttleKey, now);
+  return sent;
+}
+
+function blockedTurnReasonFromRelayMessage(msg: Record<string, unknown>): "approval" | "input" | null {
+  const method = typeof msg.method === "string" ? msg.method : "";
+  if (!method) return null;
+  if (method === "item/tool/requestUserInput") return "input";
+  if (method.includes("/requestApproval")) return "approval";
+  return null;
 }
 
 /**
@@ -3032,6 +3272,7 @@ async function routeAcpSendPrompt(msg: any, ws?: WebSocket): Promise<void> {
 function broadcastApprovalRequest(sessionId: string, event: NormalizedEvent): void {
   const threadId = `copilot-acp:${sessionId}`;
   const payload = event.payload as AcpApprovalPayload;
+  void sendBlockedTurnPush(threadId, "approval");
   const message = {
     type: "acp:approval_request",
     threadId,
@@ -3166,6 +3407,17 @@ async function relay(fromRole: Role, msgText: string, ws?: any): Promise<void> {
   const threadId = extractThreadId(msg);
   const targets = fromRole === "client" ? threadToAnchors : threadToClients;
 
+  if (fromRole === "anchor" && threadId) {
+    const method = typeof msg.method === "string" ? msg.method : "";
+    if (method === "turn/started" || method === "turn/completed") {
+      resetBlockedPushThrottle(threadId);
+    }
+    const blockedReason = blockedTurnReasonFromRelayMessage(msg);
+    if (blockedReason) {
+      void sendBlockedTurnPush(threadId, blockedReason);
+    }
+  }
+
   if (threadId) {
     logEvent(fromRole === "client" ? "client" : "server", fromRole, msgText);
     const set = targets.get(threadId);
@@ -3270,6 +3522,13 @@ const server = Bun.serve<WsData>({
         },
         reliability: reliabilitySnapshot(),
         version: { appCommit: APP_COMMIT },
+      });
+      return isHead ? new Response(null, { status: res.status, headers: res.headers }) : res;
+    }
+
+    if (method === "GET" && url.pathname === "/api/notifications/config") {
+      const res = okJson({
+        vapidPublicKey: PUSH_CONFIG.vapidPublicKey,
       });
       return isHead ? new Response(null, { status: res.status, headers: res.headers }) : res;
     }
@@ -4438,6 +4697,7 @@ const server = Bun.serve<WsData>({
         role: "client",
         authSource: ctx.mode,
         authScope: ctx.mode === "session" && ctx.sessionMode === "read_only" ? "read_only" : "full",
+        authUserId: authUserIdFromContext(ctx),
       };
       if (server.upgrade(req, { data })) return new Response(null, { status: 101 });
       return new Response("Upgrade required", { status: 426 });
@@ -4454,6 +4714,7 @@ const server = Bun.serve<WsData>({
         ...(anchorId ? { anchorId } : {}),
         authSource: ctx.mode,
         authScope: ctx.mode === "session" && ctx.sessionMode === "read_only" ? "read_only" : "full",
+        authUserId: authUserIdFromContext(ctx),
       };
       if (server.upgrade(req, { data })) {
         return new Response(null, { status: 101 });
@@ -4558,6 +4819,43 @@ const server = Bun.serve<WsData>({
         }
         if (obj.type === "orbit.list-anchors") {
           send(ws, { type: "orbit.anchors", anchors: listAnchors() });
+          return;
+        }
+        if (role === "client" && obj.type === "orbit.push-subscribe") {
+          const userId = typeof ws.data.authUserId === "string" ? ws.data.authUserId.trim() : "";
+          const endpoint = typeof obj.endpoint === "string" ? obj.endpoint.trim() : "";
+          const p256dh = typeof obj.p256dh === "string" ? obj.p256dh.trim() : "";
+          const auth = typeof obj.auth === "string" ? obj.auth.trim() : "";
+          const blockedTurnEnabled = obj.blockedTurnEnabled !== false ? 1 : 0;
+          if (userId && endpoint && p256dh && auth) {
+            upsertPushSubscription.run(userId, endpoint, p256dh, auth, nowSec(), blockedTurnEnabled);
+          }
+          return;
+        }
+        if (role === "client" && obj.type === "orbit.push-unsubscribe") {
+          const endpoint = typeof obj.endpoint === "string" ? obj.endpoint.trim() : "";
+          if (endpoint) {
+            deletePushSubscriptionByEndpoint.run(endpoint);
+          }
+          return;
+        }
+        if (role === "client" && obj.type === "orbit.push-preferences") {
+          const userId = typeof ws.data.authUserId === "string" ? ws.data.authUserId.trim() : "";
+          if (userId) {
+            updatePushPreferencesByUser.run(obj.blockedTurnEnabled === false ? 0 : 1, userId);
+          }
+          return;
+        }
+        if (role === "client" && obj.type === "orbit.push-test") {
+          const userId = typeof ws.data.authUserId === "string" ? ws.data.authUserId.trim() : "";
+          if (userId) {
+            void sendPushToUser(userId, {
+              type: "test",
+              title: "Hedwig test notification",
+              body: "Push notifications are working.",
+              actionUrl: "/settings",
+            });
+          }
           return;
         }
         // ignore others for now

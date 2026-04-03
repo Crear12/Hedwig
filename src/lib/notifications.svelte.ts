@@ -3,11 +3,15 @@ import { socket } from "./socket.svelte";
 
 const STORE_KEY = "__zane_notifications_store__";
 const STORAGE_KEY = "zane_notifications_prefs";
-const VAPID_PUBLIC_KEY = (import.meta.env.VAPID_PUBLIC_KEY as string) || "";
+const PUSH_CONFIG_ENDPOINT = "/api/notifications/config";
 
 interface Prefs {
   pushEnabled: boolean;
   blockedTurnEnabled: boolean;
+}
+
+interface PushConfigResponse {
+  vapidPublicKey?: string;
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -20,12 +24,14 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 }
 
 class NotificationsStore {
+  #vapidPublicKey = $state("");
   #pushSubscribed = $state(false);
   #pushSubscription: PushSubscription | null = null;
   #blockedTurnEnabled = $state(true);
   #lastBlockedAtByThread = new Map<string, number>();
 
   constructor() {
+    void this.#loadPushConfig();
     this.#loadPrefs();
 
     if (this.#pushSubscribed) {
@@ -38,7 +44,7 @@ class NotificationsStore {
   }
 
   get pushAvailable(): boolean {
-    return !!(VAPID_PUBLIC_KEY && "serviceWorker" in navigator && "PushManager" in window);
+    return !!(this.#vapidPublicKey && "serviceWorker" in navigator && "PushManager" in window);
   }
 
   get blockedTurnEnabled(): boolean {
@@ -48,6 +54,7 @@ class NotificationsStore {
   setBlockedTurnEnabled(enabled: boolean) {
     this.#blockedTurnEnabled = enabled;
     this.#savePrefs();
+    this.#sendNotificationPrefs();
   }
 
   async subscribePush(): Promise<boolean> {
@@ -57,7 +64,7 @@ class NotificationsStore {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY).buffer as ArrayBuffer,
+        applicationServerKey: urlBase64ToUint8Array(this.#vapidPublicKey).buffer as ArrayBuffer,
       });
 
       this.#pushSubscription = sub;
@@ -95,6 +102,10 @@ class NotificationsStore {
     }
   }
 
+  resendNotificationPrefs() {
+    this.#sendNotificationPrefs();
+  }
+
   async sendTestPush(): Promise<void> {
     if (socket.isHealthy) {
       socket.send({ type: "orbit.push-test" } as unknown as RpcMessage);
@@ -124,7 +135,7 @@ class NotificationsStore {
     }
     if (perm !== "granted") return false;
 
-    const title = "CodeRelay: action needed";
+    const title = "Hedwig: action needed";
     const actionUrl = `/thread/${encodeURIComponent(threadId)}`;
     const tag = `zane-blocked-${threadId}`;
 
@@ -183,7 +194,27 @@ class NotificationsStore {
       endpoint: sub.endpoint,
       p256dh,
       auth: authB64,
+      blockedTurnEnabled: this.#blockedTurnEnabled,
     } as unknown as RpcMessage);
+  }
+
+  #sendNotificationPrefs() {
+    if (!socket.isHealthy) return;
+    socket.send({
+      type: "orbit.push-preferences",
+      blockedTurnEnabled: this.#blockedTurnEnabled,
+    } as unknown as RpcMessage);
+  }
+
+  async #loadPushConfig(): Promise<void> {
+    try {
+      const res = await fetch(PUSH_CONFIG_ENDPOINT, { cache: "no-store" });
+      if (!res.ok) return;
+      const data = (await res.json()) as PushConfigResponse;
+      this.#vapidPublicKey = typeof data.vapidPublicKey === "string" ? data.vapidPublicKey.trim() : "";
+    } catch {
+      this.#vapidPublicKey = "";
+    }
   }
 
   #loadPrefs() {
@@ -218,7 +249,10 @@ function getStore(): NotificationsStore {
     const store = new NotificationsStore();
     global[STORE_KEY] = store;
     // Re-send push subscription on every reconnect
-    socket.onConnect(() => store.resendPushSubscription());
+    socket.onConnect(() => {
+      store.resendPushSubscription();
+      store.resendNotificationPrefs();
+    });
   }
   return global[STORE_KEY] as NotificationsStore;
 }

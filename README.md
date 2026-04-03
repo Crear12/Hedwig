@@ -1,12 +1,21 @@
-# CodeRelay
+# Hedwig
 
-![ci](https://github.com/ddevalco/coderelay/actions/workflows/ci.yml/badge.svg)
+![ci](https://github.com/Crear12/Hedwig/actions/workflows/ci.yml/badge.svg)
 
-Control your local AI coding agents on your Mac from your iPhone, securely over Tailscale.
+Hedwig is a customized CodeRelay deployment for controlling local AI coding agents on your Mac from your iPhone, securely over Tailscale.
 
-CodeRelay runs locally (Mac), stores data locally (SQLite), and is designed to stay tailnet-only (no public tunnels required).
+The app runs locally on macOS, stores data locally in SQLite, and is designed to stay tailnet-only with no public tunnel requirement. The visible product branding is `Hedwig`, while the bundled local CLI/install paths still use `coderelay`.
 
-## What you can do with it
+## What's Customized In Hedwig
+
+- Hedwig branding across the web app, share sheets, notifications, and install manifest
+- Gryffindor-inspired scarlet and triple-yellow visual theme for the main interface
+- HarryP display typography on branded page chrome while conversation text stays readable in the standard UI font
+- `Extra High` reasoning option added to the composer and settings presets
+- Improved markdown rendering for conversation readability, including clearer bullets, spacing, and block structure
+- Push notification support for Home Screen / push-capable browser contexts, plus away-mode blocked-turn alerts
+
+## What You Can Do With It
 
 - Start a task from your phone and watch it run in real time
 - Upload images/files to supported providers (for vision, screenshots, logs, etc.)
@@ -21,8 +30,9 @@ CodeRelay runs locally (Mac), stores data locally (SQLite), and is designed to s
 - Local-first persistence (SQLite event history + uploads)
 - Optional interactive approvals for tool calls (provider-dependent)
 - CLI + Admin UI for install/update, pairing, tokens, and diagnostics
+- Optional push notifications with blocked-turn alerts when the browser/device supports them
 
-## How it stays private
+## How It Stays Private
 
 - The server binds locally on your Mac (`127.0.0.1`)
 - `tailscale serve` publishes it only inside your tailnet (HTTPS/WSS)
@@ -34,6 +44,12 @@ CodeRelay runs locally (Mac), stores data locally (SQLite), and is designed to s
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ddevalco/coderelay/main/scripts/install-local.sh | bash
+```
+
+If you are installing from this fork, swap the URL to:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Crear12/Hedwig/main/scripts/install-local.sh | bash
 ```
 
 ### 2) Expose to your tailnet (Mac)
@@ -49,11 +65,19 @@ tailscale serve --bg http://127.0.0.1:8790
 - Sign in with your Access Token (print it with `~/.coderelay/bin/coderelay token`)
 - Scan the pairing QR on your iPhone
 
+To enable iPhone push notifications, open the HTTPS Tailscale URL on iPhone and add Hedwig to the Home Screen before enabling notifications in Settings.
+
 If something feels stuck, run:
 
 ```bash
 ~/.coderelay/bin/coderelay ensure
 ```
+
+## Notes
+
+- The user-facing app name is `Hedwig`.
+- The local service directory, binary, and install scripts still use `coderelay` paths for now.
+- Browser push requires a push-capable context. On iOS that means the Home Screen app, not a normal Safari tab.
 
 ## Documentation
 
@@ -73,8 +97,8 @@ Start here: [`docs/README.md`](docs/README.md)
 ## Contributing
 
 - Read: [`CONTRIBUTING.md`](CONTRIBUTING.md)
-- Issues: <https://github.com/ddevalco/coderelay/issues>
-- Backlog (Project 2): <https://github.com/users/ddevalco/projects/2>
+- Issues: <https://github.com/Crear12/Hedwig/issues>
+- Upstream project: <https://github.com/ddevalco/CodeRelay>
 
 ## Attribution
 

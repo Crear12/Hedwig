@@ -730,7 +730,7 @@
     if (format === "md") {
       const md = threadToMarkdown(threadId);
       const f = new File([md], `${title}.md`, { type: "text/markdown" });
-      const shared = await shareFileOrFallback(`CodeRelay: ${title}`, f, md);
+      const shared = await shareFileOrFallback(`Hedwig: ${title}`, f, md);
       if (!shared) downloadBlob(`${title}.md`, new Blob([md], { type: "text/markdown" }));
       return;
     }
@@ -738,7 +738,7 @@
     if (format === "html") {
       const html = threadToHtml(threadId);
       const f = new File([html], `${title}.html`, { type: "text/html" });
-      const shared = await shareFileOrFallback(`CodeRelay: ${title}`, f, html);
+      const shared = await shareFileOrFallback(`Hedwig: ${title}`, f, html);
       if (!shared) downloadBlob(`${title}.html`, new Blob([html], { type: "text/html" }));
       return;
     }
@@ -754,7 +754,7 @@
 
     const json = threadToJson(threadId);
     const f = new File([json], `${title}.json`, { type: "application/json" });
-    const shared = await shareFileOrFallback(`CodeRelay: ${title}`, f, json);
+    const shared = await shareFileOrFallback(`Hedwig: ${title}`, f, json);
     if (!shared) downloadBlob(`${title}.json`, new Blob([json], { type: "application/json" }));
   }
 </script>
@@ -921,7 +921,7 @@
 
 
 <svelte:head>
-  <title>CodeRelay</title>
+  <title>Hedwig</title>
 </svelte:head>
 
 <div class="home stack">

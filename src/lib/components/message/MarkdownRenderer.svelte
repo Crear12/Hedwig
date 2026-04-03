@@ -35,39 +35,3 @@
   {#if prefix}<span class="prefix flex-shrink-0 font-semibold {colorClass}">{prefix}</span>{/if}
   <div class="text-cli-text min-w-0 break-words markdown">{@html renderedHtml}</div>
 </div>
-
-<style>
-  .markdown :global(p) {
-    margin: 0;
-  }
-
-  .markdown :global(pre) {
-    margin: 0;
-    padding: var(--space-sm);
-    background: oklch(0 0 0 / 0.35);
-    border: 1px solid oklch(1 0 0 / 0.08);
-    border-radius: var(--radius-sm);
-    overflow: auto;
-  }
-
-  .markdown :global(code) {
-    font-family: var(--font-mono);
-  }
-
-  .markdown :global(img) {
-    max-width: min(520px, 100%);
-    height: auto;
-    display: block;
-    margin-top: var(--space-xs);
-    border-radius: var(--radius-sm);
-    border: 1px solid oklch(1 0 0 / 0.08);
-  }
-
-  .markdown :global(a) {
-    color: var(--color-cli-prefix-user);
-    text-decoration: underline;
-  }
-  .markdown :global(a:hover) {
-    opacity: 0.8;
-  }
-</style>

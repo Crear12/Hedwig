@@ -36,6 +36,19 @@
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: var(--font-sans);
+  --font-brand: "Harry P", var(--font-sans);
+
+  /* House palette */
+  --gryffindor-scarlet: #740001;
+  --gryffindor-scarlet-bright: #ae0001;
+  --gryffindor-gold: #d3a625;
+  --gryffindor-triple-yellow: #f7d24b;
+  --gryffindor-parchment: #fff4d6;
+  --gryffindor-cream: #fff9eb;
+  --gryffindor-ink: #2f150a;
+  --gryffindor-brown: #5a2a12;
+  --gryffindor-night: #18070c;
+  --gryffindor-night-elevated: #291018;
 
   /* Font sizes */
   --text-2xs: 0.75rem;
@@ -62,73 +75,97 @@
   /* ==================== */
 
   /* Message role colors */
-  --color-user: oklch(0.55 0.22 265);
-  --color-assistant: oklch(0.6 0.18 145);
-  --color-reasoning: oklch(0.5 0.25 280);
-  --color-tool: oklch(0.6 0.18 60);
-  --color-approval: oklch(0.6 0.18 60);
-  --color-error: oklch(0.55 0.22 25);
+  --color-user: var(--gryffindor-gold);
+  --color-assistant: var(--gryffindor-scarlet);
+  --color-reasoning: var(--gryffindor-triple-yellow);
+  --color-tool: #b68111;
+  --color-approval: var(--gryffindor-triple-yellow);
+  --color-error: var(--gryffindor-scarlet-bright);
 
   /* CLI Terminal Colors - Light */
-  --cli-bg: oklch(0.98 0 0);
-  --cli-bg-elevated: oklch(1 0 0);
-  --cli-bg-user: oklch(0.6 0.18 145 / 0.12);
-  --cli-text: oklch(0.25 0.02 260);
-  --cli-text-dim: oklch(0.45 0.03 260);
-  --cli-text-muted: oklch(0.7 0.03 260);
-  --cli-prefix-user: oklch(0.55 0.22 265);
-  --cli-prefix-agent: oklch(0.6 0.18 145);
-  --cli-prefix-tool: oklch(0.6 0.18 60);
-  --cli-prefix-reasoning: oklch(0.5 0.25 280);
-  --cli-prefix-file: oklch(0.6 0.15 230);
-  --cli-prefix-mcp: oklch(0.5 0.25 280);
-  --cli-prefix-web: oklch(0.6 0.15 180);
-  --cli-prefix-image: oklch(0.55 0.22 340);
-  --cli-prefix-review: oklch(0.55 0.18 260);
-  --cli-success: oklch(0.6 0.18 145);
-  --cli-warning: oklch(0.6 0.18 60);
-  --cli-error: oklch(0.55 0.22 25);
-  --cli-info: oklch(0.7 0.11 250);
-  --cli-border: oklch(0.92 0.01 260);
-  --cli-bg-hover: oklch(0.96 0.01 260);
-  --cli-selection: oklch(0.6 0.18 145 / 0.1);
+  --cli-bg: var(--gryffindor-parchment);
+  --cli-bg-elevated: var(--gryffindor-cream);
+  --cli-bg-user: color-mix(in srgb, var(--gryffindor-triple-yellow) 16%, white);
+  --cli-text: var(--gryffindor-ink);
+  --cli-text-dim: var(--gryffindor-brown);
+  --cli-text-muted: #8d6922;
+  --cli-prefix-user: var(--gryffindor-gold);
+  --cli-prefix-agent: var(--gryffindor-scarlet);
+  --cli-prefix-tool: var(--gryffindor-triple-yellow);
+  --cli-prefix-reasoning: #c48e12;
+  --cli-prefix-file: #8c4c12;
+  --cli-prefix-mcp: #9a240d;
+  --cli-prefix-web: #a96d11;
+  --cli-prefix-image: #a02d18;
+  --cli-prefix-review: #7a1a12;
+  --cli-success: #8a640f;
+  --cli-warning: var(--gryffindor-triple-yellow);
+  --cli-error: var(--gryffindor-scarlet-bright);
+  --cli-info: #9a240d;
+  --cli-border: color-mix(in srgb, var(--gryffindor-scarlet) 18%, white);
+  --cli-bg-hover: color-mix(in srgb, var(--gryffindor-triple-yellow) 14%, white);
+  --cli-selection: rgb(247 210 75 / 0.22);
+
+  /* Tailwind color utilities mirror the runtime CLI tokens */
+  --color-cli-bg: var(--cli-bg);
+  --color-cli-bg-elevated: var(--cli-bg-elevated);
+  --color-cli-bg-user: var(--cli-bg-user);
+  --color-cli-text: var(--cli-text);
+  --color-cli-text-dim: var(--cli-text-dim);
+  --color-cli-text-muted: var(--cli-text-muted);
+  --color-cli-prefix-user: var(--cli-prefix-user);
+  --color-cli-prefix-agent: var(--cli-prefix-agent);
+  --color-cli-prefix-tool: var(--cli-prefix-tool);
+  --color-cli-prefix-reasoning: var(--cli-prefix-reasoning);
+  --color-cli-prefix-file: var(--cli-prefix-file);
+  --color-cli-prefix-mcp: var(--cli-prefix-mcp);
+  --color-cli-prefix-web: var(--cli-prefix-web);
+  --color-cli-prefix-image: var(--cli-prefix-image);
+  --color-cli-prefix-review: var(--cli-prefix-review);
+  --color-cli-success: var(--cli-success);
+  --color-cli-warning: var(--cli-warning);
+  --color-cli-error: var(--cli-error);
+  --color-cli-info: var(--cli-info);
+  --color-cli-border: var(--cli-border);
+  --color-cli-bg-hover: var(--cli-bg-hover);
+  --color-cli-selection: var(--cli-selection);
 
   /* Chrome (non-code UI) */
-  --color-bg: oklch(1 0 0);
-  --color-bg-muted: oklch(0.98 0 0);
-  --color-bg-code: oklch(0.2 0 0);
-  --color-border: oklch(0.92 0.01 260);
-  --color-border-strong: oklch(0.88 0.02 260);
-  --color-text: oklch(0.2 0.02 260);
-  --color-text-muted: oklch(0.5 0.03 260);
-  --color-text-inverse: oklch(1 0 0);
+  --color-bg: var(--gryffindor-parchment);
+  --color-bg-muted: #f8e5b8;
+  --color-bg-code: #1c0c10;
+  --color-border: color-mix(in srgb, var(--gryffindor-scarlet) 18%, white);
+  --color-border-strong: color-mix(in srgb, var(--gryffindor-scarlet) 28%, white);
+  --color-text: var(--gryffindor-ink);
+  --color-text-muted: #7a5418;
+  --color-text-inverse: #fff8e4;
 
   /* Button colors */
-  --color-btn-primary-bg: oklch(0.2 0.02 260);
-  --color-btn-primary-text: oklch(1 0 0);
-  --color-btn-secondary-bg: oklch(0.96 0.01 260);
-  --color-btn-secondary-text: oklch(0.3 0.02 260);
-  --color-btn-danger-bg: oklch(0.95 0.03 25);
-  --color-btn-danger-text: oklch(0.55 0.22 25);
-  --color-btn-success-bg: oklch(0.96 0.04 145);
-  --color-btn-success-text: oklch(0.6 0.18 145);
+  --color-btn-primary-bg: var(--gryffindor-scarlet);
+  --color-btn-primary-text: #fff1b8;
+  --color-btn-secondary-bg: color-mix(in srgb, var(--gryffindor-triple-yellow) 16%, white);
+  --color-btn-secondary-text: var(--gryffindor-scarlet);
+  --color-btn-danger-bg: rgb(174 0 1 / 0.12);
+  --color-btn-danger-text: var(--gryffindor-scarlet-bright);
+  --color-btn-success-bg: rgb(247 210 75 / 0.22);
+  --color-btn-success-text: #8a640f;
 
   /* Shadows */
   --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.06), 0 1px 2px oklch(0 0 0 / 0.04);
   --shadow-md: 0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 4px -1px oklch(0 0 0 / 0.04);
-  --shadow-focus: 0 0 0 3px oklch(1 0 0 / 0.05);
+  --shadow-focus: 0 0 0 3px rgb(247 210 75 / 0.18);
   --shadow-popover: 0 4px 12px oklch(0 0 0 / 0.3);
   --shadow-card: 0 2px 8px oklch(0 0 0 / 0.06), 0 0 1px oklch(0 0 0 / 0.08);
   --shadow-card-hover: 0 4px 16px oklch(0 0 0 / 0.1), 0 0 1px oklch(0 0 0 / 0.1);
   --shadow-modal: 0 30px 80px oklch(0 0 0 / 0.35);
 
   /* UI surfaces */
-  --cli-error-bg: oklch(0.55 0.22 25 / 0.1);
-  --modal-overlay-bg: oklch(0.0273 0.0066 248.44 / 0.6);
-  --bg-overlay: oklch(0 0 0 / 0.25);
+  --cli-error-bg: rgb(174 0 1 / 0.1);
+  --modal-overlay-bg: rgb(37 9 10 / 0.62);
+  --bg-overlay: rgb(47 21 10 / 0.18);
 
   /* UI surfaces */
-  --cli-error-bg: oklch(0.55 0.22 25 / 0.1);
+  --cli-error-bg: rgb(174 0 1 / 0.1);
 
   /* Sizes */
   --size-progress-width: 100px;
@@ -142,73 +179,73 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     /* Message role colors - brighter for dark bg */
-    --color-user: oklch(0.65 0.18 260);
-    --color-assistant: oklch(0.7 0.16 145);
-    --color-reasoning: oklch(0.7 0.16 280);
-    --color-tool: oklch(0.75 0.15 60);
-    --color-approval: oklch(0.75 0.15 60);
-    --color-error: oklch(0.65 0.18 25);
+    --color-user: var(--gryffindor-triple-yellow);
+    --color-assistant: var(--gryffindor-gold);
+    --color-reasoning: #ffd76d;
+    --color-tool: #ffd76d;
+    --color-approval: #ffd76d;
+    --color-error: #ff7a6a;
 
     /* CLI Terminal Colors - Dark */
-    --cli-bg: oklch(0.18 0 0);
-    --cli-bg-elevated: oklch(0.22 0 0);
-    --cli-bg-user: oklch(0.7 0.16 145 / 0.18);
-    --cli-text: oklch(0.92 0.01 260);
-    --cli-text-dim: oklch(0.7 0.03 260);
-    --cli-text-muted: oklch(0.5 0.03 260);
-    --cli-prefix-user: oklch(0.65 0.18 260);
-    --cli-prefix-agent: oklch(0.7 0.16 145);
-    --cli-prefix-tool: oklch(0.75 0.15 60);
-    --cli-prefix-reasoning: oklch(0.7 0.16 280);
-    --cli-prefix-file: oklch(0.75 0.12 230);
-    --cli-prefix-mcp: oklch(0.7 0.16 280);
-    --cli-prefix-web: oklch(0.75 0.12 180);
-    --cli-prefix-image: oklch(0.7 0.18 340);
-    --cli-prefix-review: oklch(0.7 0.14 260);
-    --cli-success: oklch(0.7 0.16 145);
-    --cli-warning: oklch(0.75 0.15 60);
-    --cli-error: oklch(0.65 0.18 25);
-    --cli-info: oklch(0.75 0.11 250);
-    --cli-border: oklch(0.3 0.02 260);
-    --cli-bg-hover: oklch(0.25 0 0);
-    --cli-selection: oklch(0.7 0.16 145 / 0.2);
+    --cli-bg: var(--gryffindor-night);
+    --cli-bg-elevated: var(--gryffindor-night-elevated);
+    --cli-bg-user: rgb(174 0 1 / 0.2);
+    --cli-text: #f9e7aa;
+    --cli-text-dim: #d6b861;
+    --cli-text-muted: #ab8529;
+    --cli-prefix-user: #ffd76d;
+    --cli-prefix-agent: var(--gryffindor-triple-yellow);
+    --cli-prefix-tool: var(--gryffindor-gold);
+    --cli-prefix-reasoning: #ffde7b;
+    --cli-prefix-file: #eab94d;
+    --cli-prefix-mcp: #ffb35f;
+    --cli-prefix-web: #e5bf57;
+    --cli-prefix-image: #ff8f70;
+    --cli-prefix-review: #ffcf5d;
+    --cli-success: var(--gryffindor-triple-yellow);
+    --cli-warning: #ffd76d;
+    --cli-error: #ff8577;
+    --cli-info: #e0b44e;
+    --cli-border: color-mix(in srgb, var(--gryffindor-triple-yellow) 18%, var(--gryffindor-scarlet) 55%);
+    --cli-bg-hover: color-mix(in srgb, var(--gryffindor-triple-yellow) 10%, var(--gryffindor-night-elevated));
+    --cli-selection: rgb(247 210 75 / 0.18);
 
     /* Chrome (non-code UI) */
-    --color-bg: oklch(0.15 0.02 260);
-    --color-bg-muted: oklch(0.2 0.02 260);
-    --color-bg-code: oklch(0.1 0 0);
-    --color-border: oklch(0.3 0.02 260);
-    --color-border-strong: oklch(0.4 0.03 260);
-    --color-text: oklch(0.98 0 0);
-    --color-text-muted: oklch(0.7 0.03 260);
-    --color-text-inverse: oklch(0.15 0.02 260);
+    --color-bg: var(--gryffindor-night);
+    --color-bg-muted: #240b11;
+    --color-bg-code: #120307;
+    --color-border: color-mix(in srgb, var(--gryffindor-triple-yellow) 18%, var(--gryffindor-scarlet) 55%);
+    --color-border-strong: color-mix(in srgb, var(--gryffindor-triple-yellow) 24%, var(--gryffindor-scarlet) 52%);
+    --color-text: #fff3c9;
+    --color-text-muted: #d3ad55;
+    --color-text-inverse: var(--gryffindor-night);
 
     /* Button colors */
-    --color-btn-primary-bg: oklch(0.98 0 0);
-    --color-btn-primary-text: oklch(0.15 0.02 260);
-    --color-btn-secondary-bg: oklch(0.3 0.02 260);
-    --color-btn-secondary-text: oklch(0.92 0.01 260);
-    --color-btn-danger-bg: oklch(0.65 0.18 25 / 0.2);
-    --color-btn-danger-text: oklch(0.65 0.18 25);
-    --color-btn-success-bg: oklch(0.7 0.16 145 / 0.2);
-    --color-btn-success-text: oklch(0.7 0.16 145);
+    --color-btn-primary-bg: var(--gryffindor-triple-yellow);
+    --color-btn-primary-text: var(--gryffindor-night);
+    --color-btn-secondary-bg: rgb(174 0 1 / 0.22);
+    --color-btn-secondary-text: #f8df9a;
+    --color-btn-danger-bg: rgb(255 122 106 / 0.18);
+    --color-btn-danger-text: #ffb0a4;
+    --color-btn-success-bg: rgb(247 210 75 / 0.18);
+    --color-btn-success-text: #ffe08c;
 
     /* Shadows */
     --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.3), 0 1px 2px oklch(0 0 0 / 0.2);
     --shadow-md: 0 4px 12px -2px oklch(0 0 0 / 0.4), 0 2px 4px -1px oklch(0 0 0 / 0.2);
-    --shadow-focus: 0 0 0 3px oklch(1 0 0 / 0.05);
+    --shadow-focus: 0 0 0 3px rgb(247 210 75 / 0.16);
     --shadow-popover: 0 4px 12px oklch(0 0 0 / 0.3);
     --shadow-card: 0 2px 8px oklch(0 0 0 / 0.3), 0 0 1px oklch(0 0 0 / 0.4);
     --shadow-card-hover: 0 4px 16px oklch(0 0 0 / 0.4), 0 0 1px oklch(0 0 0 / 0.5);
     --shadow-modal: 0 30px 80px oklch(0 0 0 / 0.6);
 
     /* UI surfaces */
-    --cli-error-bg: oklch(0.65 0.18 25 / 0.15);
-    --modal-overlay-bg: oklch(0 0 0 / 0.8);
-    --bg-overlay: oklch(0 0 0 / 0.25);
+    --cli-error-bg: rgb(255 122 106 / 0.14);
+    --modal-overlay-bg: rgb(5 0 0 / 0.78);
+    --bg-overlay: rgb(15 0 0 / 0.28);
 
     /* UI surfaces */
-    --cli-error-bg: oklch(0.65 0.18 25 / 0.15);
+    --cli-error-bg: rgb(255 122 106 / 0.14);
 
     /* Sizes */
     --size-progress-width: 100px;
@@ -219,66 +256,70 @@
 /* Manual dark mode override */
 :root[data-theme="dark"] {
   /* Message role colors - brighter for dark bg */
-  --color-user: oklch(0.65 0.18 260);
-  --color-assistant: oklch(0.7 0.16 145);
-  --color-reasoning: oklch(0.7 0.16 280);
-  --color-tool: oklch(0.75 0.15 60);
-  --color-approval: oklch(0.75 0.15 60);
-  --color-error: oklch(0.65 0.18 25);
+  --color-user: var(--gryffindor-triple-yellow);
+  --color-assistant: var(--gryffindor-gold);
+  --color-reasoning: #ffd76d;
+  --color-tool: #ffd76d;
+  --color-approval: #ffd76d;
+  --color-error: #ff7a6a;
 
   /* CLI Terminal Colors - Dark */
-  --cli-bg: oklch(0.18 0 0);
-  --cli-bg-elevated: oklch(0.22 0 0);
-  --cli-bg-user: oklch(0.7 0.16 145 / 0.18);
-  --cli-text: oklch(0.92 0.01 260);
-  --cli-text-dim: oklch(0.7 0.03 260);
-  --cli-text-muted: oklch(0.5 0.03 260);
-  --cli-prefix-user: oklch(0.65 0.18 260);
-  --cli-prefix-agent: oklch(0.7 0.16 145);
-  --cli-prefix-tool: oklch(0.75 0.15 60);
-  --cli-prefix-reasoning: oklch(0.7 0.16 280);
-  --cli-prefix-file: oklch(0.75 0.12 230);
-  --cli-prefix-mcp: oklch(0.7 0.16 280);
-  --cli-prefix-web: oklch(0.75 0.12 180);
-  --cli-prefix-image: oklch(0.7 0.18 340);
-  --cli-prefix-review: oklch(0.7 0.14 260);
-  --cli-success: oklch(0.7 0.16 145);
-  --cli-warning: oklch(0.75 0.15 60);
-  --cli-error: oklch(0.65 0.18 25);
-  --cli-border: oklch(0.3 0.02 260);
-  --cli-bg-hover: oklch(0.25 0 0);
-  --cli-selection: oklch(0.7 0.16 145 / 0.2);
+  --cli-bg: var(--gryffindor-night);
+  --cli-bg-elevated: var(--gryffindor-night-elevated);
+  --cli-bg-user: rgb(174 0 1 / 0.2);
+  --cli-text: #f9e7aa;
+  --cli-text-dim: #d6b861;
+  --cli-text-muted: #ab8529;
+  --cli-prefix-user: #ffd76d;
+  --cli-prefix-agent: var(--gryffindor-triple-yellow);
+  --cli-prefix-tool: var(--gryffindor-gold);
+  --cli-prefix-reasoning: #ffde7b;
+  --cli-prefix-file: #eab94d;
+  --cli-prefix-mcp: #ffb35f;
+  --cli-prefix-web: #e5bf57;
+  --cli-prefix-image: #ff8f70;
+  --cli-prefix-review: #ffcf5d;
+  --cli-success: var(--gryffindor-triple-yellow);
+  --cli-warning: #ffd76d;
+  --cli-error: #ff8577;
+  --cli-info: #e0b44e;
+  --cli-border: color-mix(in srgb, var(--gryffindor-triple-yellow) 18%, var(--gryffindor-scarlet) 55%);
+  --cli-bg-hover: color-mix(in srgb, var(--gryffindor-triple-yellow) 10%, var(--gryffindor-night-elevated));
+  --cli-selection: rgb(247 210 75 / 0.18);
 
   /* Chrome (non-code UI) */
-  --color-bg: oklch(0.15 0.02 260);
-  --color-bg-muted: oklch(0.2 0.02 260);
-  --color-bg-code: oklch(0.1 0 0);
-  --color-border: oklch(0.3 0.02 260);
-  --color-border-strong: oklch(0.4 0.03 260);
-  --color-text: oklch(0.98 0 0);
-  --color-text-muted: oklch(0.7 0.03 260);
-  --color-text-inverse: oklch(0.15 0.02 260);
+  --color-bg: var(--gryffindor-night);
+  --color-bg-muted: #240b11;
+  --color-bg-code: #120307;
+  --color-border: color-mix(in srgb, var(--gryffindor-triple-yellow) 18%, var(--gryffindor-scarlet) 55%);
+  --color-border-strong: color-mix(in srgb, var(--gryffindor-triple-yellow) 24%, var(--gryffindor-scarlet) 52%);
+  --color-text: #fff3c9;
+  --color-text-muted: #d3ad55;
+  --color-text-inverse: var(--gryffindor-night);
 
   /* Button colors */
-  --color-btn-primary-bg: oklch(0.98 0 0);
-  --color-btn-primary-text: oklch(0.15 0.02 260);
-  --color-btn-secondary-bg: oklch(0.3 0.02 260);
-  --color-btn-secondary-text: oklch(0.92 0.01 260);
-  --color-btn-danger-bg: oklch(0.65 0.18 25 / 0.2);
-  --color-btn-danger-text: oklch(0.65 0.18 25);
-  --color-btn-success-bg: oklch(0.7 0.16 145 / 0.2);
-  --color-btn-success-text: oklch(0.7 0.16 145);
+  --color-btn-primary-bg: var(--gryffindor-triple-yellow);
+  --color-btn-primary-text: var(--gryffindor-night);
+  --color-btn-secondary-bg: rgb(174 0 1 / 0.22);
+  --color-btn-secondary-text: #f8df9a;
+  --color-btn-danger-bg: rgb(255 122 106 / 0.18);
+  --color-btn-danger-text: #ffb0a4;
+  --color-btn-success-bg: rgb(247 210 75 / 0.18);
+  --color-btn-success-text: #ffe08c;
 
   /* Shadows */
   --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.3), 0 1px 2px oklch(0 0 0 / 0.2);
   --shadow-md: 0 4px 12px -2px oklch(0 0 0 / 0.4), 0 2px 4px -1px oklch(0 0 0 / 0.2);
-  --shadow-focus: 0 0 0 3px oklch(1 0 0 / 0.05);
+  --shadow-focus: 0 0 0 3px rgb(247 210 75 / 0.16);
   --shadow-popover: 0 4px 12px oklch(0 0 0 / 0.3);
   --shadow-card: 0 2px 8px oklch(0 0 0 / 0.3), 0 0 1px oklch(0 0 0 / 0.4);
   --shadow-card-hover: 0 4px 16px oklch(0 0 0 / 0.4), 0 0 1px oklch(0 0 0 / 0.5);
+  --shadow-modal: 0 30px 80px oklch(0 0 0 / 0.6);
 
   /* UI surfaces */
-  --cli-error-bg: oklch(0.65 0.18 25 / 0.15);
+  --cli-error-bg: rgb(255 122 106 / 0.14);
+  --modal-overlay-bg: rgb(5 0 0 / 0.78);
+  --bg-overlay: rgb(15 0 0 / 0.28);
 
   /* Sizes */
   --size-progress-width: 100px;

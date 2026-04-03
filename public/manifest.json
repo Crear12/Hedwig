@@ -1,10 +1,10 @@
 {
-  "name": "CodeRelay",
-  "short_name": "CodeRelay",
+  "name": "Hedwig",
+  "short_name": "Hedwig",
   "start_url": "/app",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#fff4d6",
+  "theme_color": "#740001",
   "icons": [
     {
       "src": "/icons/icon.png",

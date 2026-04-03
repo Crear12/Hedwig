@@ -2,6 +2,15 @@
 @import "./lib/styles/tailwind-theme.css";
 @import "./lib/styles/tokens.css";
 @import "./lib/styles/layout.css";
+@import "./lib/styles/markdown.css";
+
+@font-face {
+  font-family: "Harry P";
+  src: url("/fonts/HarryP-MVZ6w.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
 
 * {
   box-sizing: border-box;
@@ -14,7 +23,12 @@ body {
   height: 100%;
   font-family: var(--font-mono);
   color: var(--color-cli-text);
-  background: var(--color-cli-bg);
+  background-color: var(--color-cli-bg);
+  background-image:
+    radial-gradient(circle at top, rgb(247 210 75 / 0.2), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgb(116 0 1 / 0.16), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--cli-bg-elevated) 74%, var(--cli-bg)) 0%, var(--cli-bg) 70%);
+  background-attachment: fixed;
   transition:
     background var(--transition-fast),
     color var(--transition-fast);

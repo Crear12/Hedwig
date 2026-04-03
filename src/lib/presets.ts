@@ -30,7 +30,7 @@ function normalizeMode(value: unknown): ModeKind {
 }
 
 function normalizeReasoning(value: unknown): ReasoningEffort {
-  if (value === "low" || value === "high" || value === "medium") {
+  if (value === "low" || value === "medium" || value === "high" || value === "xhigh") {
     return value;
   }
   return "medium";

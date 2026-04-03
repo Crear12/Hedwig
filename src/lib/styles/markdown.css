@@ -1,0 +1,135 @@
+.markdown {
+  min-width: 0;
+}
+
+.markdown :where(p, ul, ol, pre, blockquote, hr, h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+}
+
+.markdown :where(p, ul, ol, pre, blockquote, hr, h1, h2, h3, h4, h5, h6):not(:first-child) {
+  margin-top: var(--space-sm);
+}
+
+.markdown :where(ul, ol) {
+  padding-left: 1.5rem;
+  list-style-position: outside;
+}
+
+.markdown :where(ul) {
+  list-style-type: disc;
+}
+
+.markdown :where(ol) {
+  list-style-type: decimal;
+}
+
+.markdown :where(ul ul) {
+  margin-top: var(--space-xs);
+  list-style-type: circle;
+}
+
+.markdown :where(ul ul ul) {
+  list-style-type: square;
+}
+
+.markdown :where(ol ol) {
+  margin-top: var(--space-xs);
+  list-style-type: lower-alpha;
+}
+
+.markdown :where(ol ol ol) {
+  list-style-type: lower-roman;
+}
+
+.markdown :where(li) {
+  margin: 0.2rem 0;
+  padding-left: 0.2rem;
+}
+
+.markdown :where(li > ul, li > ol) {
+  margin-top: var(--space-xs);
+}
+
+.markdown :where(li)::marker {
+  color: var(--cli-text-muted);
+}
+
+.markdown :where(blockquote) {
+  padding-left: calc(var(--space-md) - 2px);
+  border-left: 2px solid var(--cli-border);
+  color: var(--cli-text-dim);
+}
+
+.markdown :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--cli-text);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.35;
+}
+
+.markdown :where(h1) {
+  font-size: 1.45em;
+}
+
+.markdown :where(h2) {
+  font-size: 1.3em;
+}
+
+.markdown :where(h3) {
+  font-size: 1.15em;
+}
+
+.markdown :where(h4, h5, h6) {
+  font-size: 1em;
+}
+
+.markdown :where(pre) {
+  padding: var(--space-sm);
+  background: color-mix(in oklch, black, transparent 65%);
+  border: 1px solid color-mix(in oklch, white, transparent 92%);
+  border-radius: var(--radius-sm);
+  overflow: auto;
+}
+
+.markdown :where(code) {
+  font-family: var(--font-mono);
+}
+
+.markdown :where(:not(pre) > code) {
+  padding: 0.08rem 0.32rem;
+  background: color-mix(in oklch, var(--cli-bg-elevated), black 12%);
+  border: 1px solid var(--cli-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95em;
+}
+
+.markdown :where(pre code) {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.markdown :where(hr) {
+  border: 0;
+  border-top: 1px solid var(--cli-border);
+}
+
+.markdown :where(img) {
+  display: block;
+  max-width: min(520px, 100%);
+  height: auto;
+  margin-top: var(--space-xs);
+  border: 1px solid color-mix(in oklch, white, transparent 92%);
+  border-radius: var(--radius-sm);
+}
+
+.markdown :where(a) {
+  color: var(--cli-prefix-agent);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
+}
+
+.markdown :where(a:hover) {
+  opacity: 0.85;
+}

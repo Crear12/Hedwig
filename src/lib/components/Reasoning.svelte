@@ -79,7 +79,7 @@
   });
 </script>
 
-<div class="reasoning-block font-mono text-sm" class:reasoning-streaming={isStreaming}>
+<div class="reasoning-block text-sm" class:reasoning-streaming={isStreaming}>
   <button class="flex w-full cursor-pointer items-center gap-sm border-none bg-transparent py-xs text-left font-inherit text-inherit text-cli-text-dim transition-colors hover:text-cli-text" onclick={toggle} type="button">
     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
@@ -153,19 +153,6 @@
       box-shadow: -2px 0 8px -2px color-mix(in oklch, var(--cli-prefix-agent), transparent 70%);
       border-left-color: color-mix(in oklch, var(--cli-prefix-agent), white 30%);
     }
-  }
-
-  .markdown :global(p) {
-    margin: 0;
-  }
-
-  .markdown :global(pre) {
-    margin: 0;
-    padding: var(--space-sm);
-    background: color-mix(in oklch, black, transparent 65%);
-    border: 1px solid color-mix(in oklch, white, transparent 92%);
-    border-radius: var(--radius-sm);
-    overflow: auto;
   }
 
   @keyframes slideIn {

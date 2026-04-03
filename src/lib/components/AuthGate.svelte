@@ -28,7 +28,7 @@
 {:else if auth.status === "needs_setup"}
     <div class="auth-shell stack">
         <div class="auth-card stack">
-            <div class="auth-title">Welcome to CodeRelay</div>
+            <div class="auth-title">Welcome to Hedwig</div>
             <div class="auth-subtitle">Local mode does not support account registration. Use an access token.</div>
 
             {#if auth.error}
@@ -57,7 +57,7 @@
         <div class="auth-card stack">
             {#if mode === "login"}
                 <div class="auth-title">Sign in</div>
-                <div class="auth-subtitle">Enter your access token to unlock CodeRelay.</div>
+                <div class="auth-subtitle">Enter your access token to unlock Hedwig.</div>
 
                 {#if auth.error}
                     <div class="auth-error">{auth.error}</div>

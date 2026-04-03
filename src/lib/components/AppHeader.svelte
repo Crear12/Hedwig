@@ -82,7 +82,7 @@
                 navigate("/app");
             }}
         >
-            coderelay
+            Hedwig
         </a>
         <span class="separator">·</span>
         <button
@@ -203,8 +203,15 @@
         z-index: 50;
         width: 100vw;
         margin-left: calc(50% - 50vw);
-        background: var(--cli-bg-elevated);
+        background:
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--cli-bg-elevated) 92%, var(--cli-prefix-tool) 8%),
+                color-mix(in srgb, var(--cli-bg) 95%, var(--cli-prefix-agent) 5%)
+            );
+        border-bottom: 1px solid var(--cli-border);
         box-shadow: var(--shadow-card);
+        backdrop-filter: blur(14px);
         font-family: var(--font-body);
         font-size: var(--text-sm);
         color: var(--cli-text);
@@ -218,8 +225,12 @@
     }
 
     .brand {
-        font-weight: 600;
+        font-family: var(--font-brand);
+        font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.7rem);
+        font-weight: 400;
+        letter-spacing: 0.08em;
         color: var(--cli-prefix-agent);
+        text-shadow: 0 2px 16px color-mix(in srgb, var(--cli-prefix-tool) 30%, transparent);
         text-decoration: none;
         transition: opacity var(--transition-fast);
     }

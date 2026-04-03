@@ -60,7 +60,7 @@ export interface ModelOption {
   label: string;
 }
 
-export type ReasoningEffort = "low" | "medium" | "high";
+export type ReasoningEffort = "low" | "medium" | "high" | "xhigh";
 export type SandboxMode = "read-only" | "workspace-write" | "danger-full-access";
 
 export interface ThreadSettings {
