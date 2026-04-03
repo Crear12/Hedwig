@@ -266,6 +266,7 @@ class ThreadsStore {
   loading = $state(false);
 
   #settings = $state<Map<string, ThreadSettings>>(new Map());
+  #collaborationModeSupported = $state(false);
   #nextId = 1;
   #pendingRequests = new Map<number, string>();
   #pendingStartInput: string | null = null;
@@ -276,6 +277,10 @@ class ThreadsStore {
 
   constructor() {
     this.#loadSettings();
+  }
+
+  get collaborationModeSupported(): boolean {
+    return this.#collaborationModeSupported;
   }
 
   getSettings(threadId: string | null): ThreadSettings {
@@ -407,7 +412,8 @@ class ThreadsStore {
     model: string,
     reasoningEffort?: ReasoningEffort,
     developerInstructions?: string,
-  ): CollaborationMode {
+  ): CollaborationMode | undefined {
+    if (!this.#collaborationModeSupported) return undefined;
     const preset = this.#collaborationPresets.find((p) => p.mode === mode);
     const normalizedDeveloperInstructions = (developerInstructions ?? "").trim();
     return {
@@ -501,9 +507,14 @@ class ThreadsStore {
         this.loading = false;
       }
 
-      if (type === "collaborationPresets" && msg.result) {
-        const result = msg.result as { data: CollaborationModeMask[] };
-        this.#collaborationPresets = result.data || [];
+      if (type === "collaborationPresets") {
+        this.#collaborationModeSupported = !msg.error;
+        if (msg.result) {
+          const result = msg.result as { data: CollaborationModeMask[] };
+          this.#collaborationPresets = result.data || [];
+        } else {
+          this.#collaborationPresets = [];
+        }
       }
 
       if (type === "start" && msg.result) {

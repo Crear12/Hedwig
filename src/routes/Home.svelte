@@ -207,7 +207,7 @@
       const preset = permissionPresets[permissionLevel];
       
       let collaborationMode: any = undefined;
-      if (taskAgent) {
+      if (taskAgent && threads.collaborationModeSupported) {
         const agent = agents.list.find(a => a.id === taskAgent);
         if (agent) {
            // Frontend defense-in-depth: validate agent data
